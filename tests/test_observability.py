@@ -1,5 +1,6 @@
-from ai_observability_platform import *
 import pytest
+
+from ai_observability_platform import *
 
 
 def test_summary_aggregates_usage_and_errors():
