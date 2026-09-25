@@ -1,10 +1,48 @@
 from dataclasses import dataclass
 
+
 @dataclass(frozen=True)
 class SpanMetric:
-    service:str; latency_ms:float; error:bool; tokens:int=0; cost:float=0.0
+    service: str
+    latency_ms: float
+    error: bool
+    tokens: int = 0
+    cost: float = 0.0
 
-def aggregate(spans:list[SpanMetric])->dict:
-    if not spans:return {"count":0,"error_rate":0.0,"p50_latency_ms":0.0,"tokens":0,"cost":0.0}
-    lat=sorted(x.latency_ms for x in spans); mid=lat[(len(lat)-1)//2]
-    return {"count":len(spans),"error_rate":sum(x.error for x in spans)/len(spans),"p50_latency_ms":mid,"tokens":sum(x.tokens for x in spans),"cost":round(sum(x.cost for x in spans),6)}
+    def __post_init__(self) -> None:
+        if not self.service.strip():
+            raise ValueError("service is required")
+        if self.latency_ms < 0 or self.tokens < 0 or self.cost < 0:
+            raise ValueError("metrics cannot be negative")
+
+
+def _percentile(values: list[float], percentile: float) -> float:
+    if not values:
+        return 0.0
+    if not 0 <= percentile <= 1:
+        raise ValueError("percentile must be between 0 and 1")
+    position = (len(values) - 1) * percentile
+    lower = int(position)
+    upper = min(lower + 1, len(values) - 1)
+    weight = position - lower
+    return values[lower] + (values[upper] - values[lower]) * weight
+
+
+def aggregate(spans: list[SpanMetric]) -> dict[str, float | int]:
+    if not spans:
+        return {
+            "count": 0,
+            "error_rate": 0.0,
+            "p50_latency_ms": 0.0,
+            "tokens": 0,
+            "cost": 0.0,
+        }
+
+    latencies = sorted(span.latency_ms for span in spans)
+    return {
+        "count": len(spans),
+        "error_rate": sum(span.error for span in spans) / len(spans),
+        "p50_latency_ms": _percentile(latencies, 0.5),
+        "tokens": sum(span.tokens for span in spans),
+        "cost": round(sum(span.cost for span in spans), 6),
+    }
