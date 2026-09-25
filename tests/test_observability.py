@@ -1,6 +1,6 @@
 import pytest
 
-from ai_observability_platform import *
+from ai_observability_platform import Event, ObservabilityStore
 
 
 def test_summary_aggregates_usage_and_errors():
