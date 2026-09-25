@@ -1,11 +1,16 @@
 import json
 import logging
 import os
+import time
+import uuid
 
+from fastapi import Request
 from opentelemetry import trace
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response
 
 
 def configure_observability():
@@ -49,18 +54,10 @@ class JsonFormatter(logging.Formatter):
 def get_logger(name):
     h = logging.StreamHandler()
     h.setFormatter(JsonFormatter())
-    l = logging.getLogger(name)
-    l.handlers[:] = [h]
-    l.setLevel(os.getenv("LOG_LEVEL", "INFO"))
-    return l
-
-
-import time
-import uuid
-
-from fastapi import Request
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import Response
+    logger = logging.getLogger(name)
+    logger.handlers[:] = [h]
+    logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
+    return logger
 
 
 class PrincipalObservabilityMiddleware(BaseHTTPMiddleware):
@@ -72,9 +69,7 @@ class PrincipalObservabilityMiddleware(BaseHTTPMiddleware):
         error_type = None
         tracer = trace.get_tracer("principal-http")
         try:
-            with tracer.start_as_current_span(
-                f"{request.method} {request.url.path}"
-            ) as span:
+            with tracer.start_as_current_span(f"{request.method} {request.url.path}") as span:
                 span.set_attribute("request_id", request_id)
                 span.set_attribute("correlation_id", correlation_id)
                 response = await call_next(request)
