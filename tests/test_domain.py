@@ -23,11 +23,11 @@ def test_empty_aggregate():
 @pytest.mark.parametrize(
     "metric",
     [
-        SpanMetric("a", -1, False),
-        SpanMetric("a", 1, False, -1),
-        SpanMetric("a", 1, False, 0, -0.1),
+        ("a", -1, False, 0, 0.0),
+        ("a", 1, False, -1, 0.0),
+        ("a", 1, False, 0, -0.1),
     ],
 )
-def test_metrics_reject_negative_values(metric):
+def test_metrics_reject_invalid_values(metric):
     with pytest.raises(ValueError):
-        aggregate([metric])
+        aggregate([SpanMetric(*metric)])
