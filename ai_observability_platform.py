@@ -1,7 +1,5 @@
 """AI observability: trace events, latency/token accounting and SLO-friendly aggregates."""
-from dataclasses import dataclass,field
-from collections import defaultdict
-import sys
+from dataclasses import dataclass
 @dataclass(frozen=True)
 class Event:
  trace_id:str; span_id:str; name:str; latency_ms:float; tokens:int=0; cost:float=0.0; status:str="ok"
