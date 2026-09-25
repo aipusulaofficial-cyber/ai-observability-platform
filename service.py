@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from opentelemetry import trace
 from pydantic import BaseModel, Field
 
-from observability import configure_observability, get_logger
+from observability import configure_observability, get_logger, PrincipalObservabilityMiddleware
 from observability_domain import SpanMetric, aggregate
 
 configure_observability()
