@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import math
 
 
 @dataclass(frozen=True)
@@ -12,8 +13,14 @@ class SpanMetric:
     def __post_init__(self) -> None:
         if not self.service.strip():
             raise ValueError("service is required")
-        if self.latency_ms < 0 or self.tokens < 0 or self.cost < 0:
-            raise ValueError("metrics cannot be negative")
+        if (
+            not math.isfinite(self.latency_ms)
+            or not math.isfinite(self.cost)
+            or self.latency_ms < 0
+            or self.tokens < 0
+            or self.cost < 0
+        ):
+            raise ValueError("metrics must be finite and non-negative")
 
 
 def _percentile(values: list[float], percentile: float) -> float:
