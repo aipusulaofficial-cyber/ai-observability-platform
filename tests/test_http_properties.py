@@ -17,8 +17,6 @@ def test_contract():
         min_size=1,
         max_size=32,
     ).filter(lambda value: bool(value.strip()))
-)
-
 def test_property(value: str):
     response = client.post(
         "/v1/observability",
