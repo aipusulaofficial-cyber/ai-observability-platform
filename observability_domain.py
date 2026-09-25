@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from statistics import mean
 
 @dataclass(frozen=True)
 class SpanMetric:
