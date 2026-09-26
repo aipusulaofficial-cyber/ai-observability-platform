@@ -1,29 +1,33 @@
 # AI Observability Platform
 
-**Principal-level reference implementation** focused on telemetry, health signals, correlation, failure semantics, and operational visibility for ai workloads.
+An observability layer for AI workloads that separates telemetry from business outcomes while preserving correlation and operational context.
 
-## Engineering intent
-- Clear domain boundaries and replaceable infrastructure adapters
-- Explicit contracts, validation, and failure semantics
-- Deterministic tests with external dependencies isolated
-- Operational readiness through health checks, CI, and security validation
-- Architecture decisions documented so trade-offs are reviewable
+## Observability model
+```text
+request / job
+   -> correlation context
+   -> domain execution
+   +-> logs
+   +-> metrics
+   +-> traces
+   +-> health signals
+```
 
-## System design
-The repository is structured around a small set of explicit responsibilities rather than framework-driven coupling. Request/event handling, domain policy, infrastructure adapters, and operational concerns are kept separable so individual components can evolve without forcing a system-wide rewrite.
+Logs, metrics, traces and health endpoints have distinct responsibilities. Telemetry failures must not silently change the business result.
 
-## Quality bar
-- **Correctness:** contract and edge-case tests cover expected and failure paths
-- **Reliability:** bounded work, explicit timeouts/failures, and health signals where applicable
-- **Security:** least-privilege boundaries, input validation, and safe defaults
-- **Observability:** correlation/context propagation and actionable operational signals
-- **Delivery:** reproducible CI validation before changes are considered complete
+## Contracts
+- Correlation context follows the execution boundary.
+- Health signals distinguish liveness from readiness where applicable.
+- Operational telemetry is structured for diagnosis.
+- Domain outcomes remain separate from telemetry transport failures.
 
-## Principal engineering contract
-See [docs/PRINCIPAL-ENGINEERING.md](docs/PRINCIPAL-ENGINEERING.md) for the reviewable engineering contract, NFRs, and change-safety checklist.
+## Reliability
+The implementation treats missing or failing telemetry backends as an operational concern rather than a reason to manufacture a successful domain result.
 
-## Architecture & decisions
-See [ARCHITECTURE.md](ARCHITECTURE.md) and the ADRs directory for system boundaries, key trade-offs, and extension points.
+## Verification
+Contract and failure-path tests validate the observability boundary. CI and security checks are part of the delivery path.
 
-## Engineering principle
-The goal is not to maximize framework complexity; it is to make important behavior **explicit, testable, observable, and replaceable**.
+## Evidence
+[ARCHITECTURE.md](ARCHITECTURE.md) · [docs/PRINCIPAL-ENGINEERING.md](docs/PRINCIPAL-ENGINEERING.md) · [ADRs](ADRs/)
+
+**Engineering chain:** Code → Contract → Test → Security → Runtime → Observability → Deployment → Evidence.
