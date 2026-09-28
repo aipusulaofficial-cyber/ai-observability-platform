@@ -24,7 +24,4 @@ testpaths = ["tests"]
 pythonpath = ["."]
 
 [tool.setuptools]
-py-modules = ["service", "observability_domain"]
-
-[tool.setuptools]
-py-modules=["ai_observability_platform","observability","observability_domain","resilience","service"]
+py-modules = ["ai_observability_platform","observability","observability_domain","resilience","service"]
