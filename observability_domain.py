@@ -41,6 +41,8 @@ def aggregate(spans: list[SpanMetric]) -> dict[str, float | int]:
             "count": 0,
             "error_rate": 0.0,
             "p50_latency_ms": 0.0,
+            "p95_latency_ms": 0.0,
+            "p99_latency_ms": 0.0,
             "tokens": 0,
             "cost": 0.0,
         }
@@ -50,6 +52,8 @@ def aggregate(spans: list[SpanMetric]) -> dict[str, float | int]:
         "count": len(spans),
         "error_rate": sum(span.error for span in spans) / len(spans),
         "p50_latency_ms": _percentile(latencies, 0.5),
+        "p95_latency_ms": _percentile(latencies, 0.95),
+        "p99_latency_ms": _percentile(latencies, 0.99),
         "tokens": sum(span.tokens for span in spans),
         "cost": round(sum(span.cost for span in spans), 6),
     }
