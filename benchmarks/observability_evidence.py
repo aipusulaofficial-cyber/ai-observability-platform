@@ -1,7 +1,9 @@
+import json
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-import json
+
 from observability_domain import SpanMetric, aggregate
 spans=[SpanMetric("api",100,False,100,0.01),SpanMetric("api",200,True,200,0.02),SpanMetric("worker",50,False,50,0.005)]
 r=aggregate(spans); report={"count":r["count"],"error_rate":r["error_rate"],"p50_latency_ms":r["p50_latency_ms"],"tokens":r["tokens"],"cost":r["cost"]}
