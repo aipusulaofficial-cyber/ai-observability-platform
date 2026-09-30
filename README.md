@@ -1,5 +1,10 @@
 # AI Observability Platform
 
+[![CI](https://github.com/aipusulaofficial-cyber/ai-observability-platform/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/aipusulaofficial-cyber/ai-observability-platform/actions/workflows/ci.yml)
+[![Production Tests](https://github.com/aipusulaofficial-cyber/ai-observability-platform/actions/workflows/production-tests.yml/badge.svg?branch=main)](https://github.com/aipusulaofficial-cyber/ai-observability-platform/actions/workflows/production-tests.yml)
+[![Security / SBOM](https://github.com/aipusulaofficial-cyber/ai-observability-platform/actions/workflows/security-sbom.yml/badge.svg?branch=main)](https://github.com/aipusulaofficial-cyber/ai-observability-platform/actions/workflows/security-sbom.yml)
+
+
 An observability layer for AI workloads that separates telemetry from business outcomes while preserving correlation and operational context.
 
 ## Observability model
