@@ -1,6 +1,7 @@
 import pytest
 
 from observability_domain import SpanMetric, aggregate
+from service import _strict_bool
 
 
 def test_tail_latency_is_reported():
@@ -18,9 +19,6 @@ def test_empty_aggregate_exposes_stable_tail_latency_keys():
 
 
 def test_observability_rejects_string_boolean_coercion():
-    import pytest
-
-    from service import _strict_bool
     assert _strict_bool(False) is False
     with pytest.raises(ValueError):
         _strict_bool("false")
