@@ -22,6 +22,12 @@ class Request(BaseModel):
     payload: dict = Field(default_factory=dict, max_length=32)
 
 
+def _strict_bool(value: object) -> bool:
+    if isinstance(value, bool):
+        return value
+    raise ValueError("error must be a boolean")
+
+
 @app.get("/health/live")
 def live() -> dict[str, str]:
     return {"status": "ok"}
@@ -39,7 +45,7 @@ def handle(request: Request) -> dict[str, float | int]:
             metric = SpanMetric(
                 service=request.key,
                 latency_ms=float(request.payload.get("latency_ms", 0)),
-                error=bool(request.payload.get("error", False)),
+                error=_strict_bool(request.payload.get("error", False)),
                 tokens=int(request.payload.get("tokens", 0)),
                 cost=float(request.payload.get("cost", 0)),
             )
