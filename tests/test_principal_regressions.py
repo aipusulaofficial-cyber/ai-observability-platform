@@ -15,3 +15,11 @@ def test_empty_aggregate_exposes_stable_tail_latency_keys():
     result = aggregate([])
     assert result["p95_latency_ms"] == 0.0
     assert result["p99_latency_ms"] == 0.0
+
+
+def test_observability_rejects_string_boolean_coercion():
+    import pytest
+    from service import _strict_bool
+    assert _strict_bool(False) is False
+    with pytest.raises(ValueError):
+        _strict_bool("false")
